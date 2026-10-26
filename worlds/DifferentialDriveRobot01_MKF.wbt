@@ -1,0 +1,113 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.1720381299666093 -0.003909405678978871 0.985082533793402 3.186371773382682
+  position 6.111139676597056 0.21869289055961866 2.255906426158261
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 50 50
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+}
+DEF robot Robot {
+  rotation 0 0 1 0.785398163
+  children [
+    GPS {
+      name "GPS"
+      accuracy -1
+    }
+    DEF body HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0 0.125 0.05
+      }
+      device [
+        PositionSensor {
+          name "positionSensorR"
+        }
+        RotationalMotor {
+          name "motorRight"
+          maxVelocity 100
+        }
+      ]
+      endPoint Solid {
+        translation 0 0.125 0.05
+        rotation 1 0 0 1.57
+        children [
+          DEF wheel Shape {
+            appearance Appearance {
+              material Material {
+              }
+              texture ImageTexture {
+              }
+            }
+            geometry Cylinder {
+              height 0.05
+              radius 0.05
+            }
+          }
+        ]
+        boundingObject USE wheel
+        physics Physics {
+        }
+        radarCrossSection 5
+      }
+    }
+    DEF body Pose {
+      translation 0 0 0.051
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry Box {
+            size 0.25 0.25 0.1
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0 -0.125 0.05
+      }
+      device [
+        PositionSensor {
+          name "positionSensorL"
+        }
+        RotationalMotor {
+          name "motorLeft"
+          maxVelocity 100
+        }
+      ]
+      endPoint Solid {
+        translation 0 -0.125 0.05
+        rotation 1 0 0 1.57
+        children [
+          USE wheel
+        ]
+        name "solid(1)"
+        boundingObject USE wheel
+        physics Physics {
+        }
+      }
+    }
+  ]
+  boundingObject USE body
+  physics Physics {
+  }
+  controller "controllerMultivariateKF"
+  supervisor TRUE
+}
